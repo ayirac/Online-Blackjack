@@ -1,10 +1,16 @@
-package com.oblackjack.gui;
+package com.clientblackjack.gui;
 
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener; // Import ActionListener
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.Socket;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import com.clientblackjack.Connection;
+
 import javax.swing.JButton;
 
 public class MainFrame {
@@ -25,6 +31,16 @@ public class MainFrame {
                         break;
                     case LoginPanel.SUBMIT:
                         System.out.print("Attempting to login as " + loginPanel.getUsername() + ":" + loginPanel.getPasswordHash());
+
+                        try {
+                            // basic test connection
+                            Connection testcon = new Connection(new Socket("localhost", 5012));
+                            testcon.sendMessage(loginPanel.getUsername() + ":" + loginPanel.getPasswordHash());
+                            testcon.close();
+                        } catch (IOException ev) {
+                            ev.printStackTrace();
+                        }
+                        
                 }
             }
         };

@@ -1,6 +1,6 @@
-package com.oblackjack;
+package com.clientblackjack;
 
-import com.oblackjack.gui.MainFrame;
+import com.clientblackjack.gui.MainFrame;
 
 
 public class Application 

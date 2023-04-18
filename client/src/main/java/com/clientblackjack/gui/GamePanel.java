@@ -1,4 +1,4 @@
-package com.oblackjack.gui;
+package com.clientblackjack.gui;
 
 public class GamePanel {
     

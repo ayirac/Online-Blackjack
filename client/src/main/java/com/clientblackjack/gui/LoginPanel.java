@@ -1,4 +1,4 @@
-package com.oblackjack.gui;
+package com.clientblackjack.gui;
 
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -59,7 +59,6 @@ public class LoginPanel {
         panel.add(loginBtn, constraints);
 
         loginBtn.addActionListener(listener);
-
     }
 
     public JPanel getPanel() {
