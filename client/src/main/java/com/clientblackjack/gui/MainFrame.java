@@ -18,6 +18,8 @@ public class MainFrame {
     private JPanel cards = new JPanel(cLayout);
     private MainMenuPanel mainMenuPanel;
     private LoginPanel loginPanel;
+    private ServerListPanel serverListPanel;
+    private Connection serverConnection_;
 
     public MainFrame() {
         // Listeners
@@ -34,9 +36,12 @@ public class MainFrame {
 
                         try {
                             // basic test connection
-                            Connection testcon = new Connection(new Socket("localhost", 5012));
-                            testcon.sendMessage(loginPanel.getUsername() + ":" + loginPanel.getPasswordHash());
-                            testcon.close();
+                            serverConnection_ = new Connection(new Socket("localhost", 5012));
+                            serverConnection_.sendMessage("|-!-login:" + loginPanel.getUsername() + ":" + loginPanel.getPasswordHash() + ":-!-|");
+                            String m = serverConnection_.receiveMessage();
+                            System.out.println(m);
+                            swapServerList();
+                            //serverConnection_.close();
                         } catch (IOException ev) {
                             ev.printStackTrace();
                         }
@@ -46,9 +51,11 @@ public class MainFrame {
         };
         mainMenuPanel = new MainMenuPanel(actionListener);
         loginPanel = new LoginPanel(actionListener);
+        serverListPanel = new ServerListPanel(actionListener);
 
         cards.add(mainMenuPanel.getPanel(), MainMenuPanel.MAINMENU);
         cards.add(loginPanel.getPanel(), MainMenuPanel.PLAYGAME);
+        cards.add(serverListPanel.getPanel(), "server-list");
     }
 
     public void run() {
@@ -65,6 +72,10 @@ public class MainFrame {
 
     public void swapPlayGame() {
         cLayout.show(cards, MainMenuPanel.PLAYGAME);
+    }
+
+    public void swapServerList() {
+        cLayout.show(cards, "server-list");
     }
 
     public void swapInstructions() {
