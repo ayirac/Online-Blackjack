@@ -38,9 +38,18 @@ public class MainFrame {
                             // basic test connection
                             serverConnection_ = new Connection(new Socket("localhost", 5012));
                             serverConnection_.sendMessage("|-!-login:" + loginPanel.getUsername() + ":" + loginPanel.getPasswordHash() + ":-!-|");
-                            String m = serverConnection_.receiveMessage();
-                            System.out.println(m);
-                            swapServerList();
+                            String response = serverConnection_.receiveMessage();
+                            String loginResult = parseMessage(response).str;
+                            if (loginResult.equals("valid")) {
+                                serverConnection_.sendMessage("|-!-server-list:-!-|");
+                                response = serverConnection_.receiveMessage();
+                                String[][] servers = parseMessage(response).arr;
+                                swapServerList(servers);
+                            } else if (loginResult.equals("invalid")) {
+                                System.out.println("Invalid login! Popup box to be implemented");
+                            } else {
+                                System.out.println("Error: Incorrect message passing");
+                            }
                             //serverConnection_.close();
                         } catch (IOException ev) {
                             ev.printStackTrace();
@@ -58,11 +67,11 @@ public class MainFrame {
         cards.add(serverListPanel.getPanel(), "server-list");
     }
 
-    public void run() {
+    public void run(int x, int y) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(cards);
-        frame.setSize(300, 200);
+        frame.setSize(x, y);
         frame.setVisible(true);
     }
 
@@ -74,7 +83,8 @@ public class MainFrame {
         cLayout.show(cards, MainMenuPanel.PLAYGAME);
     }
 
-    public void swapServerList() {
+    public void swapServerList(String[][] servers) {
+        serverListPanel.loadServers(servers);
         cLayout.show(cards, "server-list");
     }
 
@@ -88,5 +98,62 @@ public class MainFrame {
 
     public void quitGame() {
         System.exit(0);
+    }
+
+    private class Data {
+        public String str;
+        public String[][] arr;
+
+        public Data(String s, String[][] a) {
+            this.str = s;
+            this.arr = a;
+        }
+        
+        public Data(String s) {
+            this.str = s;
+            this.arr = new String[0][];
+        } 
+
+        public Data(String[][] a) {
+            this.str = "";
+            this.arr = a;
+        } 
+    }
+
+     // Types of messages that the server might send
+    // |-!-login:invalid-!-| 
+    // |-!-getServers:US West 1:7/8:50-!-|
+    // Parses a message & sends a response or logs an error.
+    public Data parseMessage(String msg) {
+        String data = msg.substring(msg.indexOf("|-!-")+4, msg.indexOf("-!-|")); // Get text inbetween start/end
+        System.out.println("parsing  " + msg);
+        int i = 0, previ = 0, e = 0;
+        String[] args = new String[10];
+
+        while ((i = data.indexOf(":", previ)) != -1) {
+            String cmd = data.substring(previ, i);
+            previ = i+1;
+            args[e++] = cmd;
+        }
+        
+        switch (args[0]) {
+            case "login":
+                Data d = new Data(args[1]);
+                System.out.println(d.str);
+                return d;
+            case "server-list":
+                // name:players:ping
+                int rows = (args.length-2)/3;
+                String [][] servers = new String[rows][3];
+                int c = 0, j = 1;
+                for (int r = 0; r < rows; r++) {
+                    servers[r][c++] = args[j++];
+                    servers[r][c++] = args[j++];
+                    servers[r][c++] = args[j++];
+                    c %= 3;
+                }
+                return new Data(servers);
+        }
+        return new Data("");
     }
 }

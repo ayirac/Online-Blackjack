@@ -81,7 +81,7 @@ public class Server {
             args[e++] = cmd;
         }
         
-        switch (args[0]) {
+        switch (args[0]) { // cont, server needs to send server data!
             case "login":
                 String username = args[1];
                 String password = args[2];
@@ -91,40 +91,49 @@ public class Server {
                     if (db_.validateUser(username, password))
                         res = "valid";
                     else
-                        res = "not valid";
+                        res = "invalid";
                     System.out.println(res);  
-                    cnt.sendMessage("|-!" + "login:" + res + "-!-|");
+                    cnt.sendMessage("|-!" + "login:" + res + ":-!-|");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
                 break;
-                
-                // Check if user exists in DB
-                // Check if password matches
-                // If match, send success.
-                // else, send failure
+            case "server-list":
+                // placeholder
+                String res = "US West 1:5/8:40:US West 2:1/8:35:US East:4/8:87:";
+                cnt.sendMessage("|-!" + "server-list:" + res + "-!-|");
+                break;
         }
     }
 
     private class ClientTask implements Runnable {
         private final Socket clientSocket;
+        private Connection connection;
+    
         private ClientTask(Socket clientSocket) {
             this.clientSocket = clientSocket;
         }
-
+    
         @Override
         public void run() {
             System.out.println("Got a client! " + clientSocket.getInetAddress());
-            
+    
             try {
-                connections_[totalConnections_] = new Connection(clientSocket);
-                String msg = connections_[totalConnections_].receiveMessage();
-                parseMessage(msg, connections_[totalConnections_]);
-                totalConnections_++;
-                clientSocket.close();
+                connection = new Connection(clientSocket);
+                while (true) {
+                    String msg = connection.receiveMessage();
+                    parseMessage(msg, connection);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    connection.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
+    
 }
