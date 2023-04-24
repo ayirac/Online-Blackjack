@@ -7,6 +7,12 @@ import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class Server {
     private int port_;
     private Connection[] connections_ = new Connection[100];
@@ -14,9 +20,28 @@ public class Server {
     private ServerSocket serverSocket_;
     private ExecutorService clientProcessingPool_;
     private Database db_;
+    private Lobby[] lobbies_ = new Lobby[20];
+    private int totalLobbies_ = 0;
 
     public Server(int port) {
         this.port_ = port;
+
+        // fill lobbies_ with data from a .json file?
+        try {
+            String content = new String(Files.readAllBytes(Paths.get("server/src/main/resources/servers.json")));
+            JSONObject json = new JSONObject(content);
+            JSONArray serversJson = json.getJSONArray("servers");
+
+            for (int i = 0; i < serversJson.length(); i++) {
+                JSONObject serverJson = serversJson.getJSONObject(i);
+                String name = serverJson.getString("name");
+                int maxPlayers = serverJson.getInt("maxPlayers");
+                System.out.println(name + " has a max player count of " + maxPlayers);
+                lobbies_[totalLobbies_] = new Lobby(totalLobbies_++, name, maxPlayers);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Starts the server
@@ -85,14 +110,14 @@ public class Server {
             case "login":
                 String username = args[1];
                 String password = args[2];
-                System.out.println("Extracted " + username + " and " + password);
                 try { // Send response, |-!-login:valid:-!-|
                     String res;
                     if (db_.validateUser(username, password))
                         res = "valid";
                     else
                         res = "invalid";
-                    System.out.println(res);  
+                    System.out.println("User tried connecting, result: " + res);  
+                    
                     cnt.sendMessage("|-!" + "login:" + res + ":-!-|");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -100,7 +125,23 @@ public class Server {
                 break;
             case "server-list":
                 // placeholder
-                String res = "US West 1:5/8:40:US West 2:1/8:35:US East:4/8:87:";
+                //String res = "US West 1:5/8:40:US West 2:1/8:35:US East:4/8:87:";
+                StringBuilder builder = new StringBuilder();
+                for (int f = 0; f < totalLobbies_-1; f++) {
+                    builder.append(lobbies_[f].getName()).append(":")
+                        .append(lobbies_[f].getCurrentPlayers()).append(":")
+                        .append(lobbies_[f].getPing()).append(":"); // for some reason this isnt working & its skips?
+                }
+                String res = builder.toString();
+
+                System.out.println(res);
+                
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ev) {
+                    ev.printStackTrace();
+                }
+
                 cnt.sendMessage("|-!" + "server-list:" + res + "-!-|");
                 break;
         }

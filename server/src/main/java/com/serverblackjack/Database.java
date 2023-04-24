@@ -14,9 +14,7 @@ public class Database {
 
     // Checks if the user:password combination exists in the database
     public boolean validateUser(String userName, String password) throws SQLException {
-        System.out.println("k");
         String sqlCmd = "SELECT COUNT(*) FROM users WHERE username=\"" + userName + "\" AND password=\"" + password + "\";";
-        System.out.println(sqlCmd);
         PreparedStatement sqlStatement = con.prepareStatement(sqlCmd);
         ResultSet rs = sqlStatement.executeQuery();
         rs.next();

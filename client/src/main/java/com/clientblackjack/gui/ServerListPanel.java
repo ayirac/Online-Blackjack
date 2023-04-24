@@ -83,7 +83,7 @@ public class ServerListPanel {
     public void loadServers(String[][] servers) {
         DefaultTableModel tableMod = (DefaultTableModel) serverList.getModel();
         int c = 0;
-        for (int i = 0; i < servers.length; i++) {
+        for (int i = 0; servers[i][0] != null; i++) {
             System.out.println(servers[i][0] + servers[i][1] + servers[i][2]);
             tableMod.setValueAt(servers[i][c], i, c++);
             tableMod.setValueAt(servers[i][c], i, c++);

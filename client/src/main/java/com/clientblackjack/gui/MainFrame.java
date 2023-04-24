@@ -128,7 +128,7 @@ public class MainFrame {
         String data = msg.substring(msg.indexOf("|-!-")+4, msg.indexOf("-!-|")); // Get text inbetween start/end
         System.out.println("parsing  " + msg);
         int i = 0, previ = 0, e = 0;
-        String[] args = new String[10];
+        String[] args = new String[50];
 
         while ((i = data.indexOf(":", previ)) != -1) {
             String cmd = data.substring(previ, i);
