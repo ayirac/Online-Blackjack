@@ -76,6 +76,7 @@ public class MainFrame {
 
     public void run(int x, int y) {
         JFrame frame = new JFrame();
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(cards);
         frame.setSize(x, y);

@@ -7,6 +7,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SpringLayout.Constraints;
 
 public class CreditsPanel {
 	private JPanel panel = new JPanel();
@@ -26,26 +27,31 @@ public class CreditsPanel {
 	    // andrew frame
 	    JLabel jLabelThree = new JLabel("Credit to Andrew Coviello for secondary development, debug and final revision");
 	    // all labels set to verdana font
-	    jLabelOne.setFont(new Font("Verdana",1,20));
-	    // i can only seem to add this label
-	    panel.add(jLabelOne);
 	    
-	    /*
+	    
+		GridBagConstraints constraints = new GridBagConstraints();
+	    
+		jLabelOne.setFont(new Font("Verdana",1,20));
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+	    panel.add(jLabelOne, constraints);
 	    jLabelTwo.setFont(new Font("Verdana",1,20));
-	    panel.add(jLabelTwo);
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+	    panel.add(jLabelTwo, constraints);
+		constraints.gridx = 0;
+		constraints.gridy = 2;
 	    jLabelThree.setFont(new Font("Verdana",1,20));
-	    panel.add(jLabelThree);
-	    */
+	    panel.add(jLabelThree, constraints);
+
+	
+	    
 	    // border established for panel within frame
 	    panel.setBorder(new LineBorder(Color.BLACK));
 	    // border added to frame
 	    // border size set to 400x400
 	    panel.setSize(400, 400);
 	    // frame location not set relative to anything
-	    //panel.setLocationRelativeTo(null);
-	    // default close operation (x button top right)
-	    //panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    // make sure you can actually see it
 	    panel.setVisible(true);
 	}
 	public JPanel getPanel() {
