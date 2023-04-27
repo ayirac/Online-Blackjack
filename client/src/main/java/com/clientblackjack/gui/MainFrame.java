@@ -19,6 +19,7 @@ public class MainFrame {
     private MainMenuPanel mainMenuPanel;
     private LoginPanel loginPanel;
     private ServerListPanel serverListPanel;
+    private CreditsPanel creditsPanel;
     private Connection serverConnection_;
 
     public MainFrame() {
@@ -30,6 +31,9 @@ public class MainFrame {
                 switch (buttonName) {
                     case MainMenuPanel.PLAYGAME:
                         swapPlayGame();
+                        break;
+                    case MainMenuPanel.CREDITS:
+                        swapCredits();
                         break;
                     case LoginPanel.SUBMIT:
                         System.out.print("Attempting to login as " + loginPanel.getUsername() + ":" + loginPanel.getPasswordHash());
@@ -54,6 +58,7 @@ public class MainFrame {
                         } catch (IOException ev) {
                             ev.printStackTrace();
                         }
+                    
                         
                 }
             }
@@ -61,9 +66,11 @@ public class MainFrame {
         mainMenuPanel = new MainMenuPanel(actionListener);
         loginPanel = new LoginPanel(actionListener);
         serverListPanel = new ServerListPanel(actionListener);
+        creditsPanel = new CreditsPanel(actionListener);
 
         cards.add(mainMenuPanel.getPanel(), MainMenuPanel.MAINMENU);
         cards.add(loginPanel.getPanel(), MainMenuPanel.PLAYGAME);
+        cards.add(creditsPanel.getPanel(), MainMenuPanel.CREDITS);
         cards.add(serverListPanel.getPanel(), "server-list");
     }
 
@@ -94,6 +101,10 @@ public class MainFrame {
 
     public void swapLeaderboard() {
         cLayout.show(cards, MainMenuPanel.LEADERBOARD);
+    }
+
+    public void swapCredits() {
+        cLayout.show(cards, MainMenuPanel.CREDITS);
     }
 
     public void quitGame() {

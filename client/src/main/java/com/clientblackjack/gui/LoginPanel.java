@@ -26,38 +26,38 @@ public class LoginPanel {
         loginBtn.setName(SUBMIT);
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(5, 5, 5, 5);
-
+        // how big the username and password fields will be
         passwordField.setPreferredSize(new Dimension(200, 20));
         usernameField.setPreferredSize(new Dimension(200, 20));
-
+        // adding login label to the login panel
         loginLabel.setHorizontalAlignment(JLabel.CENTER);
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 2;
         panel.add(loginLabel, constraints);
-
+        // adding username label to the login panel
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.gridwidth = 1;
         panel.add(usernameLabel, constraints);
-
+        // adding username field to the login panel
         constraints.gridx = 1;
         constraints.gridy = 1;
         panel.add(usernameField, constraints);
-
+        // adding password label to the login panel
         constraints.gridx = 0;
         constraints.gridy = 2;
         panel.add(passwordLabel, constraints);
-
+        // adding password field to the login panel
         constraints.gridx = 1;
         constraints.gridy = 2;
         panel.add(passwordField, constraints);
-
+        // adding Login button to the login panel
         constraints.gridx = 0;
         constraints.gridy = 3;
         constraints.gridwidth = 2;
         panel.add(loginBtn, constraints);
-
+        // enabling the login button to accept clicks
         loginBtn.addActionListener(listener);
     }
 
