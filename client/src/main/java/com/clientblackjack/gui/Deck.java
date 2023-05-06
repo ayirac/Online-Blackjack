@@ -46,7 +46,7 @@ public class Deck {
         }
     }
 
-
+    //f
     //This function starts the first deal of 2 cards. needs to be called per
     public Card[] start_deal()
     {
