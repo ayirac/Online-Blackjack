@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 public class Card {
     // Enums to simplify things
+    
     public enum Rank {
         ACE("ace"), TWO("two"), THREE("three"), FOUR("four"), FIVE("five"), SIX("six"), SEVEN("seven"),
         EIGHT("eight"), NINE("nine"), TEN("ten"), JACK("jack"), QUEEN("queen"), KING("king");
@@ -23,7 +24,7 @@ public class Card {
     
 
     public enum Suit {
-        CLUBS("clubs"), DIAMONDS("diamonds"), HEARTS("hearts"), SPADES("spades")
+        CLUBS("clubs"), DIAMONDS("diamonds"), HEARTS("hearts"), SPADES("spades");
 
         private final String name;
         private Suit (String name) {
