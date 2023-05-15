@@ -1,15 +1,6 @@
-package com.clientblackjack.gui;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
+package com.serverblackjack;
 
 public class Card {
-    // Enums to simplify things
-    
     public enum Rank {
         ACE("ace"), TWO("two"), THREE("three"), FOUR("four"), FIVE("five"), SIX("six"), SEVEN("seven"),
         EIGHT("eight"), NINE("nine"), TEN("ten"), JACK("jack"), QUEEN("queen"), KING("king");
@@ -36,16 +27,6 @@ public class Card {
         }
     }
 
-    public static boolean isValidCard(Suit suit, Rank rank) {
-        try {
-            Suit.valueOf(suit.name());
-            Rank.valueOf(rank.name());
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
-
     private final Rank rank_;
     private final Suit suit_;
 
@@ -54,10 +35,7 @@ public class Card {
         suit_ = suit;
     }
 
-    public BufferedImage getImage() throws IOException {
-        //InputStream is = getClass().getResourceAsStream("/images/" + rank_.toString().toLowerCase() + "_" + suit_.toString().toLowerCase() + ".png"); // disabled until all images are avail
-        InputStream is = getClass().getResourceAsStream("/images/eight_clubs.png");
-        BufferedImage img = ImageIO.read(is);
-        return img;
+    public String getType() {
+        return this.suit_.getName() + "_" + this.rank_.getName();
     }
 }

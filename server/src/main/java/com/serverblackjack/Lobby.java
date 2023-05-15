@@ -1,17 +1,25 @@
 package com.serverblackjack;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Lobby {
     private int id_;
     private String name_;
     private int maxPlayers_;
+    private int state_;                     // state in game, in-game... waitng on p1 to hit.. timeout, 30 seconds between rounds to bet, collecitng wagers..
     private Random rand_ = new Random();
+    private ArrayList<Player> players_ = new ArrayList<Player>();       // players array - cards, wager, status(out, in, stand, etc..)
+    private Dealer dealer_;                  // dealer object cards (some might be hidden), status
 
     public Lobby(int id, String name, int maxPlayers) {
         this.id_ = id;
         this.name_ = name;
         this.maxPlayers_ = maxPlayers;
+
+        //test code
+        this.generateTestingData();
+        System.out.println(this.getData());
     }
     public int getId() {
         return id_;
@@ -32,6 +40,34 @@ public class Lobby {
         return rand_.nextInt(10) + 1;
     }
     public String getCurrentPlayers() {
-        return (rand_.nextInt(8 - 0 + 1) + 1) + "/" + this.maxPlayers_;
+        return players_.size() + "/" + this.maxPlayers_;
+    }
+    public int getState() { return this.state_;}
+
+    // Returns servers-data:dealer-data:players-data
+    public String getData() {
+        String s = "server-data:" + this.getName() + ":" + Integer.toString(this.getState()) + ":" + dealer_.getData();
+        for (int j = 0; j < this.players_.size(); j++) {
+            s += this.players_.get(j).getData();
+        }
+        return s;
+    }
+
+    public void generateTestingData() {
+        // Populate players array with random players
+        String[] names = {"Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Heidi", "Ivan", "Judy"};
+        int numPlayers = rand_.nextInt(3) + 1;
+        for (int i = 0; i < numPlayers; i++) {
+            Player player = new Player(names[rand_.nextInt(names.length)]); 
+            player.setWager(new Random().nextInt(500));
+            player.getHand().populate();
+            this.players_.add(player);
+        }
+        // Randomize dealer
+        this.dealer_ = new Dealer();
+        this.dealer_.getHand().populate();
+
+        // Randomize state
+        this.state_ = 5;
     }
 }

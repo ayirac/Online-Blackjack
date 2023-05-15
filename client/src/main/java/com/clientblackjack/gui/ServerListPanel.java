@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -26,7 +28,9 @@ public class ServerListPanel {
     public JLabel listPlaceholderLabel = new JLabel("Server List");
     public JTable serverList;
 
-    public ServerListPanel(ActionListener listener) {
+    public ServerListPanel() {
+        connectBtn.setName(CONNECT);
+        backBtn.setName(BACKTOMENU);
         String[] columnHeaders = {"Name", "Players", "Ping"};
 
         DefaultTableColumnModel columnMod = new DefaultTableColumnModel();
@@ -74,6 +78,8 @@ public class ServerListPanel {
         constraints.gridx = 1;
         constraints.gridy = 2;
         panel.add(connectBtn, constraints); 
+
+        
     }
 
     public JPanel getPanel() {
@@ -91,4 +97,9 @@ public class ServerListPanel {
             c %= 3;
         }
     }
+
+    public JTable getTable() {
+        return this.serverList;
+    }
+    
 }

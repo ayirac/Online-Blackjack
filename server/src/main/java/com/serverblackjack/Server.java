@@ -118,7 +118,7 @@ public class Server {
                         res = "invalid";
                     System.out.println("User tried connecting, result: " + res);  
                     
-                    cnt.sendMessage("|-!" + "login:" + res + ":-!-|");
+                    cnt.sendMessage("|-!-" + "login:" + res + ":-!-|");
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
@@ -142,8 +142,15 @@ public class Server {
                     ev.printStackTrace();
                 }
 
-                cnt.sendMessage("|-!" + "server-list:" + res + "-!-|");
+                cnt.sendMessage("|-!-" + "server-list:" + res + "-!-|");
                 break;
+            case "connect": // iterate through current servers, check if the one im looking for in arg[1] is present. if it is, send client Dealer data, and Player Data, tmrw :)
+                for (int f = 0; f < totalLobbies_-1; f++) {
+                    if (lobbies_[f].getName().equals(args[1])) {
+                        System.out.println(lobbies_[f].getName() + "is founds"); // basically, send them all of lobbies_ data...
+                        cnt.sendMessage("|-!-" + lobbies_[f].getData() + "-!-|");
+                    }
+                }
         }
     }
 

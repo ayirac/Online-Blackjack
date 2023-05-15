@@ -18,7 +18,7 @@ public class InstructionsPanel {
     public JButton nextBtn = new JButton("Next");
     public JButton previousBtn = new JButton("Previous");
 
-    public InstructionsPanel(ActionListener listener, ActionListener listener2) {
+    public InstructionsPanel(ActionListener listener) {
         nextBtn.setName(NEXT);
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(5, 5, 5, 5);
@@ -39,7 +39,7 @@ public class InstructionsPanel {
         panel.add(previousBtn, constraints);
         // enabling the login button to accept clicks
         nextBtn.addActionListener(listener);
-        nextBtn.addActionListener(listener2);
+        nextBtn.addActionListener(listener);
     }
 
     public JPanel getPanel() {
