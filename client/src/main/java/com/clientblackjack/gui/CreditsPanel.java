@@ -37,17 +37,11 @@ public class CreditsPanel {
 	
 		//Back button made here with actionlistener
 		JButton backButton = new JButton("Back");
-		final ActionListener finalListener = listener;
-		backButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Handle back button action here
-				finalListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Back"));
-			}
-		});
+		backButton.addActionListener(listener);
 		constraints.gridx = 0;
 		constraints.gridy = 3;
 		panel.add(backButton, constraints);
+		backButton.setName("back");
 		//End of backbutton
 
 

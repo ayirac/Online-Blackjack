@@ -47,6 +47,7 @@ public class MainFrame {
     private InstructionsPanel instructionsPanel;
     private GamePanel gamePanel;
     private Connection serverConnection_;
+    private CreditsPanel creditsPanel_;
 
     public MainFrame() {
         // Listeners, handle button clicks for all panels here, parse
@@ -97,6 +98,10 @@ public class MainFrame {
                         break;  
                     case ServerListPanel.CONNECT: // add handling for connecting to specific server later
                         swapGame();
+                        break;
+                    case "back":                // this back handler works for anything that goes back to mainMenu. refactor: add an enum later somewhere like above
+                        swapMainMenu();
+                        break;
                 }
             }
         };
@@ -105,8 +110,6 @@ public class MainFrame {
         serverListPanel = new ServerListPanel();
 
         // Initialize flag and timer
-        
-
         ListSelectionListener tableListener = new ListSelectionListener() {
             boolean isExecuting = false;
             javax.swing.Timer timer = new javax.swing.Timer(1000, null);
@@ -149,50 +152,16 @@ public class MainFrame {
 
         
         //Re-did these panels to have a working back button within each panel.
-        loginPanel = new LoginPanel(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String command = e.getActionCommand();
-                if (command.equals("Back")) {
-                    // from credits panel goes back to mainmenu.
-                    swapMainMenu();
-                }
-            }
-        });
-
-        CreditsPanel creditsPanel = new CreditsPanel(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String command = e.getActionCommand();
-                if (command.equals("Back")) {
-                    // from credits panel goes back to mainmenu.
-                    swapMainMenu();
-                }
-            }
-        });
-        
-        instructionsPanel = new InstructionsPanel(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String command = e.getActionCommand();
-                if (command.equals("Back")) {
-                    // from credits panel goes back to mainmenu.
-                    swapMainMenu();
-                }
-            }
-        });
-
-
-
-
-        
+        loginPanel = new LoginPanel(actionListener);
+        creditsPanel_ = new CreditsPanel(actionListener);
+        instructionsPanel = new InstructionsPanel(actionListener);
         gamePanel = new GamePanel(actionListener);
 
 
         // Add panel to MainFrame's cardlayout
         cards.add(mainMenuPanel.getPanel(), Panel.MAINMENU.getName());
         cards.add(loginPanel.getPanel(), Panel.LOGIN.getName());
-        cards.add(creditsPanel.getPanel(), Panel.CREDITS.getName());
+        cards.add(creditsPanel_.getPanel(), Panel.CREDITS.getName());
         cards.add(serverListPanel.getPanel(), Panel.SERVERLIST.getName());
         cards.add(instructionsPanel.getPanel(), Panel.INSTRUCTIONS.getName());
         cards.add(gamePanel.getPanel(), Panel.GAME.getName());

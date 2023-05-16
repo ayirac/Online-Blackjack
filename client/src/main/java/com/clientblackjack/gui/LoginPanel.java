@@ -24,6 +24,8 @@ public class LoginPanel {
 
     public LoginPanel(ActionListener listener) {
         loginBtn.setName(SUBMIT);
+        backButton.setName("back");
+
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(5, 5, 5, 5);
         // how big the username and password fields will be
@@ -63,18 +65,10 @@ public class LoginPanel {
         constraints.gridy = 4;
         constraints.gridwidth = 1;
         panel.add(backButton, constraints);
+
         // enabling the login button to accept clicks
         loginBtn.addActionListener(listener);
-
-        //backbutton
-        final ActionListener finalListener = listener;
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle back button action here
-                finalListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Back"));
-            }
-        });
+        backButton.addActionListener(listener);
 
     }
 

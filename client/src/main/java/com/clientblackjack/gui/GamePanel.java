@@ -28,7 +28,7 @@ public class GamePanel {
     private ArrayList<PlayerCard> players = new ArrayList<PlayerCard>();
 
     public GamePanel(ActionListener listener) {
-       
+        
     }
 
     public JPanel getPanel() {

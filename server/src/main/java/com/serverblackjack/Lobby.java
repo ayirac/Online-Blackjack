@@ -3,7 +3,7 @@ package com.serverblackjack;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Lobby {
+public class Lobby implements Runnable{
     private int id_;
     private String name_;
     private int maxPlayers_;
@@ -11,6 +11,7 @@ public class Lobby {
     private Random rand_ = new Random();
     private ArrayList<Player> players_ = new ArrayList<Player>();       // players array - cards, wager, status(out, in, stand, etc..)
     private Dealer dealer_;                  // dealer object cards (some might be hidden), status
+    private Thread thread_;
 
     public Lobby(int id, String name, int maxPlayers) {
         this.id_ = id;
@@ -20,6 +21,20 @@ public class Lobby {
         //test code
         this.generateTestingData();
         System.out.println(this.getData());
+
+        // testing threading
+        thread_ = new Thread(this);
+        thread_.start();
+    }
+    public void run() {
+        System.out.println("This code is running in a thread");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println(this.id_ + " slept for 5s");
     }
     public int getId() {
         return id_;
