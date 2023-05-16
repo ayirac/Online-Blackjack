@@ -19,6 +19,7 @@ import com.clientblackjack.gui.Card.Suit;
 import javax.swing.JButton;
 
 public class MainFrame {
+    private JFrame frame;
     public enum Panel {
         MAINMENU("Main Menu"),
         LOGIN("Login"),
@@ -43,7 +44,6 @@ public class MainFrame {
     private MainMenuPanel mainMenuPanel;
     private LoginPanel loginPanel;
     private ServerListPanel serverListPanel;
-    private CreditsPanel creditsPanel;
     private InstructionsPanel instructionsPanel;
     private GamePanel gamePanel;
     private Connection serverConnection_;
@@ -146,9 +146,46 @@ public class MainFrame {
 
         // Initalize panels, pass the above action listener to parse data in MainFrame
         mainMenuPanel = new MainMenuPanel(actionListener);
-        loginPanel = new LoginPanel(actionListener);
-        creditsPanel = new CreditsPanel(actionListener);
-        instructionsPanel = new InstructionsPanel(actionListener);
+
+        
+        //Re-did these panels to have a working back button within each panel.
+        loginPanel = new LoginPanel(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String command = e.getActionCommand();
+                if (command.equals("Back")) {
+                    // from credits panel goes back to mainmenu.
+                    swapMainMenu();
+                }
+            }
+        });
+
+        CreditsPanel creditsPanel = new CreditsPanel(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String command = e.getActionCommand();
+                if (command.equals("Back")) {
+                    // from credits panel goes back to mainmenu.
+                    swapMainMenu();
+                }
+            }
+        });
+        
+        instructionsPanel = new InstructionsPanel(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String command = e.getActionCommand();
+                if (command.equals("Back")) {
+                    // from credits panel goes back to mainmenu.
+                    swapMainMenu();
+                }
+            }
+        });
+
+
+
+
+        
         gamePanel = new GamePanel(actionListener);
 
 
@@ -162,7 +199,7 @@ public class MainFrame {
     }
 
     public void run(int x, int y) {
-        JFrame frame = new JFrame();
+        frame = new JFrame();
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(cards);
@@ -200,9 +237,11 @@ public class MainFrame {
         cLayout.show(cards, Panel.GAME.getName());
     }
 
+
     public void quitGame() {
         System.exit(0);
     }
+
 
     private class Data {
         public String str;
@@ -318,4 +357,5 @@ public class MainFrame {
         }
         return new Data("");
     }
+
 }

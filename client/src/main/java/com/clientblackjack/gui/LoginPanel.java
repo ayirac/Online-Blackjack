@@ -1,6 +1,6 @@
 package com.clientblackjack.gui;
-
 import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,7 +11,7 @@ import java.awt.*;
 public class LoginPanel {
     public static final String SUBMIT = "submit";
     public static final String[] BUTTONS = {SUBMIT};
-    
+    JButton backButton = new JButton("Back");
     private JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints constraints = new GridBagConstraints();
 
@@ -53,12 +53,29 @@ public class LoginPanel {
         constraints.gridy = 2;
         panel.add(passwordField, constraints);
         // adding Login button to the login panel
-        constraints.gridx = 0;
+        constraints.gridx = 1;
         constraints.gridy = 3;
-        constraints.gridwidth = 2;
+        constraints.gridwidth = 1;
         panel.add(loginBtn, constraints);
+
+        //adding back button.
+        constraints.gridx = 1;
+        constraints.gridy = 4;
+        constraints.gridwidth = 1;
+        panel.add(backButton, constraints);
         // enabling the login button to accept clicks
         loginBtn.addActionListener(listener);
+
+        //backbutton
+        final ActionListener finalListener = listener;
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle back button action here
+                finalListener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Back"));
+            }
+        });
+
     }
 
     public JPanel getPanel() {
