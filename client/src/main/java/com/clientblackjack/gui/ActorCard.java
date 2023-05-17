@@ -68,14 +68,14 @@ public class ActorCard extends JPanel {
     }
 
     public Hand getHand() {
-        return this.hand_;
+        return this.hand_; // gets the hand of the actor
     }
     
     public String getNamed() {
-        return name;
+        return name; // gets the name of the actor
     }
 
     public void setNamed(String name) {
-        this.name = name;
+        this.name = name; // sets the name of the actor, also why are these methods ending with Named instead of Name?
     }
 }
