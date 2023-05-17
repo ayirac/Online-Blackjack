@@ -56,6 +56,7 @@ public class GamePanel {
     }
 
     public void init() {
+        panel.removeAll(); // Clear the panel
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -68,6 +69,8 @@ public class GamePanel {
             constraints.gridwidth = 1;
             panel.add(players.get(i).getPanel(), constraints);
         }
+        panel.repaint();
+        panel.revalidate();
     }
 
 }

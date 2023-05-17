@@ -13,12 +13,20 @@ import javax.swing.JPanel;
 public class Hand extends JPanel {
     private ArrayList<Card> cards;
     
+    public ArrayList<Card> getCards() {
+        return cards;
+    }
+
+
     public Hand() {
         cards = new ArrayList<>();
         setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
     }
+
+    // add card is cool, but need a way to check if the card exists in the state before adding/updating (removing)
     
     public void addCard(Card card) throws IOException {
+        System.out.println("Should add a CARD!");
         float scale = 0.5f; // scale of card size, refactor later
         Image originalImage = card.getImage();
         int newWidth = (int) (originalImage.getWidth(null) * scale);
@@ -49,5 +57,16 @@ public class Hand extends JPanel {
 
     public JPanel getPanel() {
         return this;
+    }
+
+    public boolean isEqual(Hand h) {
+        if (h.getCards().size() != this.cards.size())
+            return false;
+        for (int i = 0; i < cards.size(); i++) {
+            if (!h.cards.get(i).isEqual(cards.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }

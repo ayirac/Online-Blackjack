@@ -26,4 +26,6 @@ public class PlayerCard extends ActorCard {
     public void clearWager() {
         wagerLabel.setText("0");
     }
+
+
 }

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,6 +24,8 @@ public class Server {
     private Database db_;
     private Lobby[] lobbies_ = new Lobby[20];
     private int totalLobbies_ = 0;
+    private int playerTurnStage_ = 0;
+    private boolean activeTimer = false;
 
     public Server(int port) {
         this.port_ = port;
@@ -70,6 +74,55 @@ public class Server {
                 }
             }
         };
+        Runnable lobbyTask = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        // Scan all lobbies
+                        for (int i = 0; i < totalLobbies_; i++) {
+                            final Lobby lobby = lobbies_[i];
+                            if (lobby.getPlayers().size() > 0 && lobby.getState() == -1) {                                      // state -1 to 0, first player connect
+                                System.out.println("Players present in " + lobby.getName() + ", starting game...");
+                                lobby.setState(0);
+                                if (!activeTimer) {
+                                    activeTimer = true;
+                                    Timer timer = new Timer();
+                                    timer.schedule(new TimerTask() {
+                                        @Override
+                                        public void run() {
+                                            System.out.println("Timeout stage passed in " + lobby.getName() + ", dealing cards..."); // state 0 to 1, pre-game idle
+                                            lobby.setState(1);
+                                        }
+                                    }, 2000); // 30 seconds ideally, put a const here later! refactor
+                                }
+                                
+                            } else if (lobby.getPlayers().size() > 0 && lobby.getState() == 1) {                                    // state 1 to 2, dealing cards
+                                System.out.println("Deal stage passed in " + lobby.getName() + ", dealing cards...");
+                                lobby.deal(); // maybe make it so the cards are dealt/sent slowly to add more immersion, waaaay in the future!
+                                lobby.setState(2);
+                            } else if (lobby.getPlayers().size() > 0 && lobby.getState() == 2) {                                    // state 2, players turn state!
+                                if (lobby.getPlayerTurnStage() == 0) {
+                                    lobby.setPlayerTurnStage(1);
+                                    for (int o = 0; o < lobby.getPlayers().size(); o++) {
+                                        lobby.getPlayers().get(o).setState(2);
+                                    }
+                                }
+                                
+                            } else if (lobby.getPlayers().size() > 0 && lobby.getState() == 3) {                                    // state 3, dealer turn state!
+
+                            }
+                        }
+        
+                        // Sleep for a while before scanning again
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        
         // Shutdown hook to close the server socket when the program is terminated
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -85,7 +138,9 @@ public class Server {
         });
 
         Thread serverThread = new Thread(serverTask);
+        Thread lobbiesThread = new Thread(lobbyTask);
         serverThread.start();
+        lobbiesThread.start();
 
     }
 
@@ -101,7 +156,6 @@ public class Server {
         while ((i = data.indexOf(":", previ)) != -1) {
             
             String cmd = data.substring(previ, i);
-            System.out.println(cmd);
             previ = i+1;
             args[e++] = cmd;
         }
@@ -133,7 +187,6 @@ public class Server {
                         .append(lobbies_[f].getPing()).append(":"); // for some reason this isnt working & its skips?
                 }
                 String res = builder.toString();
-
                 System.out.println(res);
                 
                 try {
@@ -145,10 +198,23 @@ public class Server {
                 cnt.sendMessage("|-!-" + "server-list:" + res + "-!-|");
                 break;
             case "connect": // iterate through current servers, check if the one im looking for in arg[1] is present. if it is, send client Dealer data, and Player Data, tmrw :)
+                String serverName = args[2];
+                username = args[1];
                 for (int f = 0; f < totalLobbies_-1; f++) {
-                    if (lobbies_[f].getName().equals(args[1])) {
-                        System.out.println(lobbies_[f].getName() + "is founds"); // basically, send them all of lobbies_ data...
+                    if (lobbies_[f].getName().equals(serverName)) {
+                        
+                        System.out.println(lobbies_[f].getId() + " has a new player");
+                        cnt.setLobbyID(lobbies_[f].getId()); // organize connections by what lobby they're connected to
+                        lobbies_[f].addPlayer(username, cnt);
                         cnt.sendMessage("|-!-" + lobbies_[f].getData() + "-!-|");
+                        break;
+                    }
+                }
+                break;
+            case "update-data":
+                for (int f = 0; f < totalLobbies_-1; f++) { 
+                    if (lobbies_[f].getName().equals(args[2])) {
+                        cnt.sendMessage("|-!-" + this.lobbies_[f].getUpdateData() + "-!-|");
                     }
                 }
         }

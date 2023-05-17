@@ -60,4 +60,23 @@ public class Card {
         BufferedImage img = ImageIO.read(is);
         return img;
     }
+
+    public boolean isEqual(Card card) {
+        if (this.suit_ == card.suit_ && this.rank_ == card.rank_) {
+            return true;
+        }
+        return false;
+    }
+
+    public Suit getSuit() {
+        return suit_;
+    }
+
+    public Rank getRank() {
+        return rank_;
+    }
+
+    public String getType() {
+        return this.suit_.getName() + "_" + this.rank_.getName();
+    }
 }

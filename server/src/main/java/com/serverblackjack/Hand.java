@@ -17,6 +17,11 @@ public class Hand {
         return cards;
     }
 
+    // Deals a single card
+    public void deal() {
+        this.cards.add(Card.generateRandomCard());
+    }
+
     public void populate() {
         // populating with 2, if needed add as argument
         for (int i = 0; i < 2; i++) {

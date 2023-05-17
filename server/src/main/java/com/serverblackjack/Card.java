@@ -1,5 +1,7 @@
 package com.serverblackjack;
 
+import java.util.Random;
+
 public class Card {
     public enum Rank {
         ACE("ace"), TWO("two"), THREE("three"), FOUR("four"), FIVE("five"), SIX("six"), SEVEN("seven"),
@@ -38,4 +40,15 @@ public class Card {
     public String getType() {
         return this.suit_.getName() + "_" + this.rank_.getName();
     }
+
+    public static Card generateRandomCard() {
+        Random random = new Random();
+        Card.Rank[] ranks = Card.Rank.values();
+        Card.Suit[] suits = Card.Suit.values();
+    
+        Card.Rank randomRank = ranks[random.nextInt(ranks.length)];
+        Card.Suit randomSuit = suits[random.nextInt(suits.length)];
+        return new Card(randomRank, randomSuit);
+    }
+    
 }
