@@ -456,8 +456,6 @@ public class MainFrame {
                     System.out.println(activatedResultsLabel);
                     if (this.loggedName_.equals(playerName))
                         this.gamePanel.getPlayers().get(pos).setMoney(cMoney);
-                    else 
-                        f++; // skip o
                     //int cMoney = Integer.parseInt(args[f++]);
 
                     // Adjust buttons/actions based on state

@@ -85,21 +85,26 @@ public class GamePanel {
         cs.gridwidth = 5;
         cs.fill = GridBagConstraints.HORIZONTAL;
         panel.add(dealer.getPanel(), cs);      // Dealer
-
+    
         cs.gridx = 0;                          // buttons
         cs.gridy = 1;
         cs.gridwidth = 1;
         panel.add(actionButtons, cs);
-        
+    
+        Insets playerInsets = new Insets(10, 10, 10, 10); // Customize the values as needed
+    
         for (int i = 0; i < players.size(); i++) {      // Player
             cs.gridx = i;
             cs.gridy = 2;
             cs.gridwidth = 1;
+            cs.insets = playerInsets; // Set the insets for player panel
             panel.add(players.get(i).getPanel(), cs);
         }
+    
         panel.repaint();
         panel.revalidate();
     }
+    
 
     public void toggle(String string, String name) {
             for (int i = 0; i < this.players.size(); i++) {

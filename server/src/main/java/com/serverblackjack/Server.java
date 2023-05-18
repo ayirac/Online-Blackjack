@@ -203,8 +203,8 @@ public class Server {
                                     lobby.getPlayers().get(o).setWager(0);  
                                     //lobby.getPlayers().get(o).setState(6); /// set client to post game
                                 }
-                                for (int o = 0; o < lobby.getPlayers().size(); o++) { 
-                                    if (lobby.getPlayers().get(o).getState() != 6 && lobby.getPlayers().get(o).getState() != 7 && lobby.getPlayers().get(o).getState() != 0) {
+                                for (int o = 0; o < lobby.getPlayers().size(); o++) {  // maybe new bug here, added extra check fors tate == 3, shouldnt be needed!
+                                    if (lobby.getPlayers().get(o).getState() != 6 && lobby.getPlayers().get(o).getState() != 7 && lobby.getPlayers().get(o).getState() != 0 && lobby.getPlayers().get(o).getState() != 3) {
                                         playersDone = false;
                                     }
                                 }
