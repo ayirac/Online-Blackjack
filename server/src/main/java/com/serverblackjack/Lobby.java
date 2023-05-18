@@ -3,38 +3,73 @@ package com.serverblackjack;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Lobby implements Runnable{
+public class Lobby {
     private int id_;
     private String name_;
     private int maxPlayers_;
-    private int state_;                     // state in game, in-game... waitng on p1 to hit.. timeout, 30 seconds between rounds to bet, collecitng wagers..
+    private int state_;                                                 // -1, no players, 0, waiting for players to bet (30secs), 1 dealing, 2 player turn, 3 dealer turn, 4 post-game/calculation
     private Random rand_ = new Random();
     private ArrayList<Player> players_ = new ArrayList<Player>();       // players array - cards, wager, status(out, in, stand, etc..)
-    private Dealer dealer_;                  // dealer object cards (some might be hidden), status
-    private Thread thread_;
 
+    private Dealer dealer_;                                             // dealer object cards (some might be hidden), status
+    private int playerTurnStage_;
+
+    
     public Lobby(int id, String name, int maxPlayers) {
         this.id_ = id;
         this.name_ = name;
         this.maxPlayers_ = maxPlayers;
+        this.dealer_ = new Dealer();
+        this.state_ = -1;
 
         //test code
-        this.generateTestingData();
-        System.out.println(this.getData());
-
+        //this.generateTestingData();
+        //System.out.println(this.getData());
         // testing threading
-        thread_ = new Thread(this);
-        thread_.start();
     }
+    /* 
     public void run() {
         System.out.println("This code is running in a thread");
         try {
-            Thread.sleep(5000);
+            while (true) {
+                switch (this.state_) {
+                    case -1:
+                        System.out.println(players_.size());
+                        if (players_.size() > 0) {
+                            System.out.println("We have players! Starting game");
+                            for (int i = 0; i < players_.size(); i++) {
+                                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+                                LocalDateTime now = LocalDateTime.now();
+                                players_.get(i).getConnection().sendMessage(dtf.format(now) + "|-!-" + ":" + "update-data:" + this.getUpdateData() + "-!-|");
+                                }
+                                this.state_ = 0;
+                            }
+                            break;
+                    case 0:
+                        for (int i = 0; i < players_.size(); i++) {
+                            
+                            
+                            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+                            LocalDateTime now = LocalDateTime.now();
+                            players_.get(i).getConnection().sendMessage(dtf.format(now) + "|-!-" + ":" + "update-data:" + this.getUpdateData() + "-!-|");
+                            String response = players_.get(i).getConnection().receiveMessage();
+                            this.server_.parseMessage(response, players_.get(i).getConnection());
+                        }
+                    Thread.sleep(500);
+                } 
+            }
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-        }
-        System.out.println(this.id_ + " slept for 5s");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+    }
+    */
+    public int getPlayerTurnStage() {
+        return playerTurnStage_;
+    }
+    public void setPlayerTurnStage(int playerTurnStage_) {
+        this.playerTurnStage_ = playerTurnStage_;
     }
     public int getId() {
         return id_;
@@ -48,6 +83,9 @@ public class Lobby implements Runnable{
     public String getName() {
         return name_;
     }
+    public Dealer getDealer() {
+        return dealer_;
+    }
     public void setName(String name_) {
         this.name_ = name_;
     }
@@ -59,13 +97,51 @@ public class Lobby implements Runnable{
     }
     public int getState() { return this.state_;}
 
-    // Returns servers-data:dealer-data:players-data
+    public void addPlayer(String name, Connection cnt) {
+        Player player = new Player(name, cnt); 
+        this.players_.add(player);
+    }
+
+    // For initial data, Returns servers-data:dealer-data:players-data
     public String getData() {
-        String s = "server-data:" + this.getName() + ":" + Integer.toString(this.getState()) + ":" + dealer_.getData();
+        String s = "server-data:" + this.getName() + ":" + this.getState() + ":" + dealer_.getData();
         for (int j = 0; j < this.players_.size(); j++) {
             s += this.players_.get(j).getData();
         }
         return s;
+    }
+
+    // For streamed data
+    public String getUpdateData() {
+        String s = "update-data:" + this.getName() + ":" + this.getState() + ":" + dealer_.getData();
+        for (int j = 0; j < this.players_.size(); j++) {
+            s += this.players_.get(j).getData();
+        }
+        return s;
+    }
+
+    // deals to each player & dealer
+    public void deal() {
+        for (int i = 0; i < this.players_.size(); i++) { //player 1x
+            this.players_.get(i).getHand().deal();
+        }
+        this.dealer_.getHand().deal();                  // dealer 1x
+        for (int i = 0; i < this.players_.size(); i++) { //player 2x
+            this.players_.get(i).getHand().deal();
+        }
+        this.dealer_.getHand().deal();                  // dealer 1x
+        
+    }
+
+    public void dealDealer() {
+        this.dealer_.getHand().deal();                  // dealer 1x
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players_;
+    }
+    public void setPlayers(ArrayList<Player> players_) {
+        this.players_ = players_;
     }
 
     public void generateTestingData() {
@@ -84,5 +160,8 @@ public class Lobby implements Runnable{
 
         // Randomize state
         this.state_ = 5;
+    }
+    public void setState(int i) {
+        this.state_ = i;
     }
 }

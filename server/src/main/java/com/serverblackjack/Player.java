@@ -4,6 +4,15 @@ package com.serverblackjack;
 public class Player extends Actor{
     private String name;
     private int wager;
+    private Connection connection;
+    private int money;
+
+    public Player(String n, Connection cnt) {
+        this.name = n;
+        this.wager = 0;
+        this.connection = cnt;
+        this.money = 5000;
+    }
 
     public Player(String n) {
         this.name = n;
@@ -16,10 +25,31 @@ public class Player extends Actor{
     // output data as such: name:state:wager:hand:cDIA5:cSPAJ:
     @Override
     public String getData() {
-        String s = this.getName() + ":" + this.getState() + ":" + Integer.toString(this.getWager()) + ":" + "hand" + ":";
+        boolean atleastOne = false;
+        String s = this.getName() + ":" + this.getState() + ":" + Integer.toString(this.getWager()) + ":" + Integer.toString(this.getMoney()) + ":"  + "hand" + ":"; // adding money here..
         for (int j = 0; j < this.getHand().getCards().size(); j++) {
+            atleastOne = true;
             s += this.getHand().getCards().get(j).getType() + ":";
         }
+        if (!atleastOne) {
+            s += "n_a" + ":";
+        }
         return s;
+    }
+
+    public int getMoney() {
+        return this.money;
+    }
+
+    public void setMoney(int mon) {
+        this.money = mon;
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
     }
 }

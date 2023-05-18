@@ -48,16 +48,57 @@ public class Card {
 
     private final Rank rank_;
     private final Suit suit_;
+    private boolean hidden;
+
+    
 
     public Card(Rank rank, Suit suit) {
+        hidden = false;
         rank_ = rank;
         suit_ = suit;
     }
 
-    public BufferedImage getImage() throws IOException {
-        //InputStream is = getClass().getResourceAsStream("/images/" + rank_.toString().toLowerCase() + "_" + suit_.toString().toLowerCase() + ".png"); // disabled until all images are avail
-        InputStream is = getClass().getResourceAsStream("/images/eight_clubs.png");
+    static public BufferedImage getHideImage() throws IOException {
+        InputStream is = DealerCard.class.getResourceAsStream("/images/hide.png");
         BufferedImage img = ImageIO.read(is);
         return img;
+    }
+    
+ 
+   public BufferedImage getImage() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/images/" + rank_.toString().toLowerCase() + "_" + suit_.toString().toLowerCase() + ".png"); // disabled until all images are avail
+        //InputStream is = getClass().getResourceAsStream("/images/eight_clubs.png");
+        BufferedImage img = ImageIO.read(is);
+        return img;
+    }
+
+    public boolean isEqual(Card card) {
+        if (this.suit_ == card.suit_ && this.rank_ == card.rank_) {
+            return true;
+        }
+        return false;
+    }
+
+    public Suit getSuit() {
+        return suit_;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public Rank getRank() {
+        return rank_;
+    }
+
+    public String getType() {
+        return this.suit_.getName() + "_" + this.rank_.getName();
+    }
+
+    public void setHidden(boolean h) {
+        this.hidden = h;
+    }
+
+    public void setImage(BufferedImage hideImage) {
     }
 }

@@ -10,11 +10,21 @@ public class Connection {
     private Socket socket_;
     private BufferedReader input_;
     private PrintWriter output_;
+    private int lobbyID_;  // -1, not connected to a lobby
+
+    public int getLobbyID() {
+        return lobbyID_;
+    }
+
+    public void setLobbyID(int lobby_id_) {
+        this.lobbyID_ = lobby_id_;
+    }
 
     public Connection(Socket sock) throws IOException {
         this.socket_ = sock;
         this.input_ = new BufferedReader(new InputStreamReader(this.socket_.getInputStream()));
         this.output_ = new PrintWriter(this.socket_.getOutputStream(), true);
+        lobbyID_ = -1;
     }
 
     public String receiveMessage() throws IOException {
