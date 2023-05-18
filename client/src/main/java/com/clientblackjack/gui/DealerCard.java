@@ -9,7 +9,6 @@ public class DealerCard extends ActorCard {
     DealerCard() {
         super("Dealer", false);
         // able to customize dealer font/color, other attributes here in the future.
-<<<<<<< HEAD
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;              // Avatar
         constraints.gridy = 0;
@@ -23,9 +22,6 @@ public class DealerCard extends ActorCard {
         constraints.gridwidth = 5;
         this.add(hand_, constraints);
         this.hidden = false;
-=======
-        super("Dealer"); // are you gonna implement any more functions here?
->>>>>>> 1ad69b8e79fbbe1e33031e898af745377545a638
     }
 
     public void hideSecondCard() throws IOException {

@@ -43,7 +43,7 @@ public class PlayerCard extends ActorCard {
             constraints.gridy = 1;
             constraints.anchor = GridBagConstraints.EAST;
             this.add(panel, constraints);
-    }
+        }
         }
         
 
