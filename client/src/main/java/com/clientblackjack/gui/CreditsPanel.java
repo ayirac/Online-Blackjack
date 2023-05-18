@@ -1,56 +1,58 @@
 package com.clientblackjack.gui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class CreditsPanel {
-    private JPanel panel = new JPanel(); // panel which will open and where text will be displayed, not set to visible(true) yet
+    private JPanel panel = new JPanel();
 
-	public CreditsPanel(ActionListener listener) { // credits panel method takes action listener as param
-		panel.setLayout(new GridBagLayout()); // using a grid bag layout to set the layout for the panel
-	
-		JLabel jLabelOne = new JLabel("Credit to Kyle Garrett for preliminary development and debug"); // 1st credit label for Kyle Garrett
-		JLabel jLabelTwo = new JLabel("Credit to Arthur Santamaria for intermediate code review and debug"); // 2nd credit label for Arthur Santamaria
-		JLabel jLabelThree = new JLabel("Credit to Andrew Coviello for secondary development, debug and final revision"); // 3rd credit label for Andrew Coviello
-		// Kyle Arthur Andrew - KAA
-		GridBagConstraints constraints = new GridBagConstraints(); // Constraints for the grid bag layout
-	
-		jLabelOne.setFont(new Font("Verdana", 1, 20)); // Font for first JLabel (Kyle Garrett), will be same size and font for all 3
-		constraints.gridx = 0; // That should put this in the middle
-		constraints.gridy = 0; // Highest up
-		panel.add(jLabelOne, constraints); // Added label 1 with constraints to the panel
-	
-		jLabelTwo.setFont(new Font("Verdana", 1, 20));
-		constraints.gridx = 0; 
-		constraints.gridy = 1; // Middle highest up
-		panel.add(jLabelTwo, constraints); // Added label 2 with constraints to the panel
-	
-		jLabelThree.setFont(new Font("Verdana", 1, 20));
-		constraints.gridx = 0;
-		constraints.gridy = 2; // Between middle label and back button
-		panel.add(jLabelThree, constraints); // Added label 3 with constraints to the panel
-	
-		//Back button made here with actionlistener
-		JButton backButton = new JButton("Back");
-		backButton.addActionListener(listener); // Listener from before is being used in back button
-		constraints.gridx = 0; 
-		constraints.gridy = 3; // Lowest
-		panel.add(backButton, constraints); // Back button, with constraints, is added to the bottom of the panel
-		backButton.setName("back"); // Name for button is set
-		//End of backbutton
+    public CreditsPanel(ActionListener listener) {
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon backgroundImage = new ImageIcon(getClass().getResource("/images/mainmenu.jpg"));
+                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
 
+        JLabel jLabelOne = new JLabel("Credit to Kyle Garrett for primary development, Game UI design, and debugging\n\n");
+        JLabel jLabelTwo = new JLabel("Credit to Arthur Santamaria for development, UI design, and debugging.\n\n");
+        JLabel jLabelThree = new JLabel("Credit to Andrew Coviello for secondary development, debug and final revision");
+        JButton backButton = new JButton("Back");
+        Font labelFont = new Font("Verdana", Font.BOLD, 20);
+        Color labelColor = Color.WHITE;
 
-		panel.setBorder(new LineBorder(Color.BLACK)); // Black border for panel
-		panel.setSize(400, 400); // 400x400 panel
-		panel.setVisible(true); // now when we click the button we can actually see the panel pop up
-	}
+        jLabelOne.setFont(labelFont);
+        jLabelOne.setForeground(labelColor);
+        jLabelTwo.setFont(labelFont);
+        jLabelTwo.setForeground(labelColor);
+        jLabelThree.setFont(labelFont);
+        jLabelThree.setForeground(labelColor);
 
-    public JPanel getPanel() { // returning the panel we just made
+        panel.add(jLabelOne);
+        panel.add(jLabelTwo);
+        panel.add(jLabelThree);
+
+        backButton.addActionListener(listener);
+        backButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        backButton.setName("back");
+        backButton.setContentAreaFilled(false); // Make the button transparent
+        backButton.setForeground(Color.WHITE); // Set the text color to white
+        backButton.setFont(labelFont); // Set the font for the button text
+
+        panel.add(Box.createVerticalGlue()); // Add vertical glue to push the button to the bottom
+        panel.add(backButton);
+
+        panel.setBorder(new LineBorder(Color.BLACK));
+        panel.setSize(400, 400);
+        panel.setVisible(true);
+    }
+
+    public JPanel getPanel() {
         return this.panel;
     }
 }

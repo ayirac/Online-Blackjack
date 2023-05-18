@@ -2,6 +2,8 @@ package com.clientblackjack.gui;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,13 +26,30 @@ public class InstructionsPanel {
         instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.gridwidth = 2;
+        constraints.gridwidth = 2;  
+        
+        
+
+        panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // gets image, already resized to 1280 x 720
+                ImageIcon backgroundImage = new ImageIcon(getClass().getResource("/images/mainmenu.jpg"));
+                // displays the background image
+                g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
         panel.add(instructionsLabel, constraints);
 
         // Adding instructions text area to the panel
         instructionsText.setEditable(false);
-        instructionsText.setLineWrap(true);
+        instructionsText.setLineWrap(false);
         instructionsText.setWrapStyleWord(true);
+        instructionsText.setBackground(new Color(0, 0, 0, 150));
+        instructionsText.setFont(new Font("Copperplate Gothic", Font.BOLD, 14));
+        instructionsText.setForeground(Color.WHITE);
+        //instructionsText.setForeground(Color.WHITE);
         instructionsText.setText("Objective:\n"
                 + "The objective of Blackjack is to beat the dealer's hand without exceeding a total card value of 21.\n\n"
                 + "Card Values:\n"
@@ -49,7 +68,7 @@ public class InstructionsPanel {
                 + "If neither the player nor the dealer busts, the hands are compared, and the one with a higher total card value wins.\n"
                 + "If the player's hand value is the same as the dealer's, it's a push (tie), and the player's bet is returned.\n\n"
                 + "Special Hands:\n"
-                + "Blackjack: If the player's initial hand consists of an Ace and a 10-value card (10, Jack, Queen, or King), it's called a Blackjack. A Blackjack is an automatic win unless the dealer also has a Blackjack. In that case, it's a push.\n"
+                + "Blackjack: If the player's initial hand consists of an Ace and a 10-value card (10, Jack, Queen, or King), it's called a Blackjack. \nA Blackjack is an automatic win unless the dealer also has a Blackjack. In that case, it's a push.\n"
                 + "Insurance: If the dealer's face-up card is an Ace, players have the option to take insurance. This is a separate side bet that pays 2:1 if the dealer has a Blackjack.\n\n"
                 + "Options:\n"
                 + "Hit: To request another card.\n"
@@ -71,8 +90,6 @@ public class InstructionsPanel {
                 panel.add(backButton, constraints);
             }
         
-
-
 
 
             public JPanel getPanel() {
