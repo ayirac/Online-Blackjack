@@ -67,6 +67,7 @@ public class MainFrame {
     private CreditsPanel creditsPanel_;
     private String loggedName_;
     private String loggedServer_;
+    private boolean activatedResultsLabel;
 
     private DataThread dataThread;
 
@@ -125,6 +126,33 @@ public class MainFrame {
                         break;
                     case "back":                // this back handler works for anything that goes back to mainMenu. refactor: add an enum later somewhere like above
                         swapMainMenu();
+                        break;
+                    // GamePanel Action buttons
+                    case GamePanel.HIT:
+                        System.out.println("hit!");
+                        serverConnection_.sendMessage(("|-!-action:" + getLoggedName() + ":" + loggedServer_ + ":" + "hit" + ":-!-|"));
+                        try {
+                            parseMessage(serverConnection_.receiveMessage());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                        break;
+                    case GamePanel.STAND:
+                        serverConnection_.sendMessage(("|-!-action:" + getLoggedName() + ":" + loggedServer_ + ":" + "stand" + ":-!-|"));
+                        try {
+                            parseMessage(serverConnection_.receiveMessage());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                        break;
+                    case GamePanel.PLACEWAGER:
+                        System.out.println("wager placed!");
+                        serverConnection_.sendMessage(("|-!-action:" + getLoggedName() + ":" + loggedServer_ + ":" + "wager" +  ":" + gamePanel.getWager() + ":-!-|"));
+                        try {
+                            parseMessage(serverConnection_.receiveMessage());
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                         break;
                 }
             }
@@ -299,6 +327,7 @@ public class MainFrame {
                 // server-data:US West 1:5:dealer:0:hand:spades_king:diamonds_two:Bob:0:0:hand:clubs_seven:hearts_five:
                 // server-data:name:state:dealer:dealerState:hand:suit_rank:suit_rank:playerName:playerWager:playerState:hand:suit_rank:suit_rank:...next player... next player... and so ong
             case "server-data": // >lobby class ->dealer class & player class
+                this.activatedResultsLabel = false;
                 int f = 1;
                 this.gamePanel.setLobbyName(args[f++]);
                 this.gamePanel.setState(Integer.parseInt(args[f++]));
@@ -323,9 +352,17 @@ public class MainFrame {
                 }
                 // PLAYER DATA
                 while (!args[f].equals("\0")) {
-                    PlayerCard player = new PlayerCard(args[f++]);
+                    String nam = args[f++];
+                    boolean isPlayer = false;
+                    if (nam.equals(this.loggedName_))
+                        isPlayer = true;
+                    PlayerCard player = new PlayerCard(nam, isPlayer);
                     player.setState(Integer.parseInt(args[f++]));
-                    player.setWager(Integer.parseInt(args[f++]));
+                    player.setWager(Integer.parseInt(args[f++])); // added money here
+                    if (isPlayer)
+                        player.setMoney(Integer.parseInt(args[f++]));
+                    else 
+                        f++; // skip other peoples money, myb fix this in future
                     f++;    // skip handTag
                     validCard = true;                          
                     cardType[0] = "";
@@ -386,22 +423,57 @@ public class MainFrame {
                     this.gamePanel.getDealer().setHand(recievedDealerHand);
                 }
                 // PLAYER DATA
+                Boolean[] playersProcessed = new Boolean[12]; // 12 players have false data at start
+                for (int n = 0; n < playersProcessed.length; n++) {
+                    playersProcessed[n] = false;
+                }
+
                 while (args[f] != "\0") {
                     // locate player
-                    String name = args[1];
+                    String name = args[f];
                     int pos = 0;
                     boolean playersExist = false;
                     if (this.gamePanel.getPlayers().size() != 0) {
                         playersExist = true;
                         for (pos = 0; pos < this.gamePanel.getPlayers().size(); pos++) {
-                            if (this.gamePanel.getPlayers().get(pos).getNamed().equals(name)) {
-                                break;
+                            if (playersProcessed[pos] == false) {
+                                if (this.gamePanel.getPlayers().get(pos).getNamed().equals(name)) {
+                                    playersProcessed[pos] = true;
+                                    break;
+                                }
                             }
+                            
                         }
                     }
+                    System.out.println("Handing player #" + Integer.toString((pos)));
                     String playerName = args[f++];
                     int cState = Integer.parseInt(args[f++]);
                     int cWager = Integer.parseInt(args[f++]);
+                    int cMoney = Integer.parseInt(args[f++]);
+                    if (cState == 0 || cState == 1) {
+                        this.activatedResultsLabel = false; // lazy way of setting this to false at start of each game
+                    }
+                    System.out.println(activatedResultsLabel);
+                    if (this.loggedName_.equals(playerName))
+                        this.gamePanel.getPlayers().get(pos).setMoney(cMoney);
+                    else 
+                        f++; // skip o
+                    //int cMoney = Integer.parseInt(args[f++]);
+
+                    // Adjust buttons/actions based on state
+                    if (playerName.equals(this.loggedName_)) {
+                        if (cState == 1) {
+                            this.gamePanel.getActionButtons().toggleWagerVisibility(true);
+                        }
+                        else if (cState == 2) {
+                            this.gamePanel.getActionButtons().toggleWagerVisibility(false);
+                            this.gamePanel.getActionButtons().toggleButtonVisibility(true);
+                        } else {
+                            this.gamePanel.getActionButtons().toggleWagerVisibility(false);
+                            this.gamePanel.getActionButtons().toggleButtonVisibility(false);
+                        }
+                    }
+                    
                     f++;    // skip handTag
                     validCard = true;                          
                     cardTyp[0] = "";
@@ -431,27 +503,62 @@ public class MainFrame {
                         //this.gamePanel.getDealer().setHand(recievedDealerHand);
                     }
                     
-                    if (playersExist) { // problem is here...
-                        if (!recievedHand.isEqual(this.gamePanel.getPlayers().get(pos-1).getHand())) {
+                    if (playersProcessed[pos]) { // problem is here...
+                        if (!recievedHand.isEqual(this.gamePanel.getPlayers().get(pos).getHand())) {
                             //player.setHand(recievedHand);
                             //player.getHand().addCard(new Card(Card.Rank.ACE, Card.Suit.CLUBS));
                             //this.gamePanel.getPlayers().add(player); 
-                            System.out.println("Wow they arent equal!!");
-                            this.gamePanel.getPlayers().get(pos-1).getHand().addCard(new Card(Card.Rank.ACE, Card.Suit.CLUBS));
-                            this.gamePanel.getPlayers().get(pos-1).setHand(recievedHand);
+                            System.out.println(Integer.toString((pos)) + " has new deck, updating");
+                            //this.gamePanel.getPlayers().get(pos-1).getHand().addCard(new Card(Card.Rank.ACE, Card.Suit.CLUBS));
+                            this.gamePanel.getPlayers().get(pos).setHand(recievedHand);
                         }
+                        if ( this.gamePanel.getPlayers().get(pos).getState() == 4 || this.gamePanel.getPlayers().get(pos).getState() == 6 || this.gamePanel.getPlayers().get(pos).getState() == 7) { // check for victory/bust
+                            if ( this.gamePanel.getPlayers().get(pos).getNamed().equals(this.loggedName_)) {
+                                if (!activatedResultsLabel) {
+                                    activatedResultsLabel = true;
+                                    if (this.gamePanel.getPlayers().get(pos).getState() == 4 || this.gamePanel.getPlayers().get(pos).getState() == 7) //bust
+                                        this.gamePanel.toggle("Bust", this.loggedName_);
+                                    else if (this.gamePanel.getPlayers().get(pos).getState() == 6) // win
+                                        this.gamePanel.toggle("Win", this.loggedName_);
+                                    this.gamePanel.getDealer().setHidden(false);
+                                }
+                            }
+                        } else if (this.gamePanel.getPlayers().get(pos).getState() == 0 || this.gamePanel.getPlayers().get(pos).getState() == 1) {
+                            this.gamePanel.toggle("delete", this.loggedName_);
+                        }
+                        
+                        this.gamePanel.getPlayers().get(pos).setState(cState);
+                        this.gamePanel.getPlayers().get(pos).setWager(cWager);
+                        //this.gamePanel.getPlayers().get(pos).setMoney(cMoney);
                     } else {
-                        PlayerCard player = new PlayerCard(playerName);
+                        PlayerCard player = new PlayerCard(playerName, false);
                         player.setState(cState);
                         player.setWager(cWager);
+                        //player.setMoney(cMoney);
                         this.gamePanel.getPlayers().add(player);
                     }
                     gamePanel.init();
+
+                    if (this.gamePanel.getDealer().getHand().getCards().size() >= 2) {
+                        if (this.gamePanel.getState() == 1 || this.gamePanel.getState() == 2) { // lazy way of setting dealer card to invis at start
+                            try {
+                                if (!this.gamePanel.getDealer().hiddenCard())
+                                    this.gamePanel.getDealer().hideSecondCard();
+                            } catch (IOException ds) {
+                                ds.printStackTrace();
+                            }
+                        }   
+                        else if (this.gamePanel.getDealer().hiddenCard() && (this.gamePanel.getState() == 1 || this.gamePanel.getState() == 2)) { // show card 
+                            try {
+                                if (this.gamePanel.getDealer().hiddenCard())
+                                    this.gamePanel.getDealer().showSecondCard();
+                            } catch (IOException ds) {
+                                ds.printStackTrace();
+                            }
+                        }
+                    }
                     
-                   /*  if (pos != -1) {
-                        
-                        gamePanel.init();
-                    }*/
+                    
                     
                 }
                 break;       

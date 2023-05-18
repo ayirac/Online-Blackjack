@@ -83,6 +83,9 @@ public class Lobby {
     public String getName() {
         return name_;
     }
+    public Dealer getDealer() {
+        return dealer_;
+    }
     public void setName(String name_) {
         this.name_ = name_;
     }
@@ -128,6 +131,10 @@ public class Lobby {
         }
         this.dealer_.getHand().deal();                  // dealer 1x
         
+    }
+
+    public void dealDealer() {
+        this.dealer_.getHand().deal();                  // dealer 1x
     }
 
     public ArrayList<Player> getPlayers() {

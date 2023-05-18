@@ -14,12 +14,12 @@ import javax.swing.SwingConstants;
 
 public class ActorCard extends JPanel {
     public Hand hand_ = new Hand();
-    private Avatar avatar_ = new Avatar("test_avatar");
-    private String name;
-    private JLabel nameLabel;
-    private int state;
+    protected Avatar avatar_ = new Avatar("test_avatar");
+    protected String name;
+    protected JLabel nameLabel;
+    protected int state;
 
-    ActorCard(String actName) {
+    ActorCard(String actName, boolean play) {
         GridBagConstraints constraints = new GridBagConstraints();
         this.setLayout(new GridBagLayout());
         Font font = new Font("Arial", Font.BOLD, 20);  // create new font
@@ -29,10 +29,7 @@ public class ActorCard extends JPanel {
         this.nameLabel.setPreferredSize(new Dimension(200, 50)); // set size for the name label
         constraints.fill = GridBagConstraints.HORIZONTAL;
 
-        constraints.gridx = 0;              // Avatar
-        constraints.gridy = 0;
-        constraints.insets = new Insets(0, 85, 0, 0);
-        this.add(this.avatar_, constraints);
+        
 
         constraints.gridx = 1;              // Name
         constraints.gridy = 0;
@@ -42,7 +39,12 @@ public class ActorCard extends JPanel {
         
 
         constraints.insets = new Insets(0, 0, 0, 0);
-        constraints.gridx = 0;              // Hand/Cards
+        if (!play) 
+            constraints.gridx = 0;              // Hand/Cards, make room for player's wager
+        else {
+            constraints.gridx = 1;
+            constraints.insets = new Insets(0, 0, 0, 0);
+        }
         constraints.gridy = 1;
         constraints.gridwidth = 5;
         this.add(hand_, constraints);
