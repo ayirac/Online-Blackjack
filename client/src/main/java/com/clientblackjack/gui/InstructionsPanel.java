@@ -12,44 +12,42 @@ import java.awt.*;
 
 public class InstructionsPanel {
 
-    private JPanel panel = new JPanel(new GridBagLayout());
-    GridBagConstraints constraints = new GridBagConstraints();
+    private JPanel panel = new JPanel(new GridBagLayout()); // new JPanel, panel, with gridbaglayout for consistency throughout the program's various buttons
+    GridBagConstraints constraints = new GridBagConstraints(); // new constraints using GridBagConstraints default
 
-    public JLabel instructionsLabel = new JLabel("Instructions");
-    public JTextArea instructionsText = new JTextArea();
+    public JLabel instructionsLabel = new JLabel("Instructions"); // instructions text label
+    public JTextArea instructionsText = new JTextArea(); // text area to go with it
 
-    public InstructionsPanel(ActionListener listener) {
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.insets = new Insets(5, 5, 5, 5);
+    public InstructionsPanel(ActionListener listener) { // instructions panel constructor with listener as parameter
+        constraints.fill = GridBagConstraints.HORIZONTAL; // grid bag constraints fill the panel horizontally to justify it 
+        constraints.insets = new Insets(5, 5, 5, 5); // new insets for constraints, basically a perfect square of 5s
 
         // Adding instructions label to the panel
-        instructionsLabel.setHorizontalAlignment(JLabel.CENTER);
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 2;  
+        instructionsLabel.setHorizontalAlignment(JLabel.CENTER); // set horizontal alignment to the center
+        constraints.gridx = 0; // no horizontal skew
+        constraints.gridy = 0; // no vertical skew
+        constraints.gridwidth = 2;  // width of 2
         
-        
-
-        panel = new JPanel() {
+        panel = new JPanel() { // panel with paint component
             @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
+            protected void paintComponent(Graphics g) { // paint component method
+                super.paintComponent(g); // call super on paint component with graphics param g (recursion)
                 // gets image, already resized to 1280 x 720
                 ImageIcon backgroundImage = new ImageIcon(getClass().getResource("/images/mainmenu.jpg"));
                 // displays the background image
                 g.drawImage(backgroundImage.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
         };
-        panel.add(instructionsLabel, constraints);
+        panel.add(instructionsLabel, constraints); // add instructions label with given constraints to the panel
 
         // Adding instructions text area to the panel
-        instructionsText.setEditable(false);
-        instructionsText.setLineWrap(false);
-        instructionsText.setWrapStyleWord(true);
-        instructionsText.setBackground(new Color(0, 0, 0, 150));
-        instructionsText.setFont(new Font("Copperplate Gothic", Font.BOLD, 14));
-        instructionsText.setForeground(Color.WHITE);
-        //instructionsText.setForeground(Color.WHITE);
+        instructionsText.setEditable(false); // instructions text is not editable
+        instructionsText.setLineWrap(false); // instructions text does not have line wrap
+        instructionsText.setWrapStyleWord(true); // instructions text sets wrap style word to true
+        instructionsText.setBackground(new Color(0, 0, 0, 150)); // background is set to color of rgb 0, 0, 0, 150
+        instructionsText.setFont(new Font("Copperplate Gothic", Font.BOLD, 14)); // bold copperplate gothic used for instructions font
+        instructionsText.setForeground(Color.WHITE); // white foreground contrasts dark color
+        //instructionsText.setForeground(Color.WHITE); Are you going to be doing anything with this line?
         instructionsText.setText("Objective:\n"
                 + "The objective of Blackjack is to beat the dealer's hand without exceeding a total card value of 21.\n\n"
                 + "Card Values:\n"
@@ -75,24 +73,22 @@ public class InstructionsPanel {
                 + "Stand: To stop taking cards and end the player's turn.\n"
                 + "Double Down: To double the initial bet and receive one additional card.\n"
                 + "Split: If the player's initial two cards have the same value, they can choose to split them into two separate hands. This requires placing an additional bet equal to the initial bet.");
-                constraints.gridx = 0;
-                constraints.gridy = 1;
-                constraints.gridwidth = 2;
+                constraints.gridx = 0; // no horizontal skew
+                constraints.gridy = 1; // skewed down by 1 unit
+                constraints.gridwidth = 2; // width of 2 units
                 constraints.weightx = 1.0; // Set the weightx to 1.0 to allow horizontal expansion
                 constraints.fill = GridBagConstraints.BOTH; // Allow both horizontal and vertical expansion
-                panel.add(instructionsText, constraints);
+                panel.add(instructionsText, constraints); // instructions text and constraints added to panel
 
-                JButton backButton = new JButton("Back");
-                backButton.setName("back"); // change to const/enum later
-                backButton.addActionListener(listener);
-                constraints.gridx = 0;
-                constraints.gridy = 3;
-                panel.add(backButton, constraints);
+                JButton backButton = new JButton("Back"); // back button created
+                backButton.setName("back"); // change to const/enum later Did you do this yet?
+                backButton.addActionListener(listener); // Action listener added to back button
+                constraints.gridx = 0; // No horizontal skew
+                constraints.gridy = 3; // All the way down at the bottom
+                panel.add(backButton, constraints); // Button added to the panel
             }
         
-
-
-            public JPanel getPanel() {
+            public JPanel getPanel() { // returns this panel
                 return this.panel;
             }
         }
