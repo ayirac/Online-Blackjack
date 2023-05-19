@@ -9,67 +9,65 @@ import java.io.IOException;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class PlayerCard extends ActorCard {
-    PlayerCard(String name, boolean isPlay) {
-        super(name, isPlay);
-        wagerLabel.setText("0");
-        GridBagConstraints constraints = new GridBagConstraints();
+public class PlayerCard extends ActorCard { // player card inherits from actor card
+    PlayerCard(String name, boolean isPlay) { // player card constructo takes name str and isPlay bool
+        super(name, isPlay); 
+        wagerLabel.setText("0"); // set wager label text to 0 cuz no wager is placed yet
+        GridBagConstraints constraints = new GridBagConstraints(); // constraints is new grid bag constraints
 
-        constraints.anchor = GridBagConstraints.EAST;
+        constraints.anchor = GridBagConstraints.EAST; // eastward anchor established
         constraints.gridx = 0;              // Avatar
-        constraints.gridy = 0;
-        constraints.insets = new Insets(0, 0, 0, 0);
-        this.add(this.avatar_, constraints);
+        constraints.gridy = 0;              // No vertical skew
+        constraints.insets = new Insets(0, 0, 0, 0); // new insets for constraints
+        this.add(this.avatar_, constraints); // add this avatar with the given constraints
 
 
 
-        if (isPlay) {
-            JPanel panel = new JPanel(new GridBagLayout());
-            constraints.gridx = 0;
-            constraints.gridy = 0;
-            constraints.anchor = GridBagConstraints.SOUTHEAST;
-            panel.add(wagerLabel, constraints);
+        if (isPlay) { // if it is play
+            JPanel panel = new JPanel(new GridBagLayout()); // panel is new j panel with a new grid bag layout
+            constraints.gridx = 0; // no horizontal skew
+            constraints.gridy = 0; // no vertical skew
+            constraints.anchor = GridBagConstraints.SOUTHEAST; // southeast anchor established
+            panel.add(wagerLabel, constraints); // wager label w/ constraints added to panel
 
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.anchor = GridBagConstraints.EAST;
-            panel.add(moneyLabel, constraints);
-            constraints.gridx = 0;
-            constraints.gridy = 2;
-            constraints.anchor = GridBagConstraints.NORTHEAST;
-            panel.add(resultLabel, constraints);
+            constraints.gridx = 0; // no horizontal skew
+            constraints.gridy = 1; // downward vertical skew
+            constraints.anchor = GridBagConstraints.EAST; // eastward anchor established
+            panel.add(moneyLabel, constraints); // money label with constraints added to panel
+            constraints.gridx = 0; // no horizontal skew
+            constraints.gridy = 2; // heavy downward vertical skew
+            constraints.anchor = GridBagConstraints.NORTHEAST; // northeast anchor established
+            panel.add(resultLabel, constraints); // result label with constraints added to panel
 
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.anchor = GridBagConstraints.EAST;
-            this.add(panel, constraints);
+            constraints.gridx = 0; // no horizontal skew
+            constraints.gridy = 1; // downward vertical skew
+            constraints.anchor = GridBagConstraints.EAST; // eastward anchor established
+            this.add(panel, constraints); // panel added with given constraints
         }
         }
         
 
-    private JLabel wagerLabel = new JLabel();
-    private JLabel moneyLabel = new JLabel();
-    private JLabel resultLabel = new JLabel();
+    private JLabel wagerLabel = new JLabel(); // wager label initialized 
+    private JLabel moneyLabel = new JLabel(); // money label initialized
+    private JLabel resultLabel = new JLabel(); // result label initialized
 
-    public void setWager(int wager) {
-        wagerLabel.setText("Wager: " + Integer.toString(wager));
+    public void setWager(int wager) { // set wager using wager as int param
+        wagerLabel.setText("Wager: " + Integer.toString(wager)); // wager label text initialized
     }
 
-    public void clearWager() {
-        wagerLabel.setText("0");
+    public void clearWager() { // clear wager method
+        wagerLabel.setText("0"); // set from wager to 0
     }
 
-    public void setMoney(int money) {
-        moneyLabel.setText("Money: " + Integer.toString(money));
+    public void setMoney(int money) { // set money method
+        moneyLabel.setText("Money: " + Integer.toString(money)); // the amount of money that the player has is established via a visible label
     }
 
-    public void clearMoney() {
-        moneyLabel.setText("0");
+    public void clearMoney() { // clear money method
+        moneyLabel.setText("0"); // set from money to 0
     }
 
-    public void setResult(String string) {
-        resultLabel.setText(string);
+    public void setResult(String string) { // set result method
+        resultLabel.setText(string); // publish the result given the string that contains it
     }
-
-
 }
